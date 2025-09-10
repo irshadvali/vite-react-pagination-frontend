@@ -1,0 +1,1 @@
+# vite-react-pagination-frontend
