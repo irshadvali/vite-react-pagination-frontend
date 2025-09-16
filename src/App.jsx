@@ -7,7 +7,7 @@ function App() {
   const { items, total, loading } = useSelector((state) => state.data);
 
   const [page, setPage] = useState(1);
-  const limit = 100;
+  const limit = 50;
   const totalPages = total > 0 ? Math.ceil(total / limit) : null; // null until API responds
 
   useEffect(() => {
