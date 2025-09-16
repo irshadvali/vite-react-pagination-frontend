@@ -24,18 +24,33 @@ const data = Array.from({ length: 100000 }, (_, i) => ({
   month: months[Math.floor(Math.random() * months.length)],
 }));
 
-// API with pagination
+// API with pagination + filters
 app.get("/api/data", (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 100;
 
+  // Extract filters from query params
+  const { client, product, feeType, fileType, status, month } = req.query;
+
+  // Apply filtering
+  let filteredData = data;
+
+  if (client) filteredData = filteredData.filter(d => d.client === client);
+  if (product) filteredData = filteredData.filter(d => d.product === product);
+  if (feeType) filteredData = filteredData.filter(d => d.feeType === feeType);
+  if (fileType) filteredData = filteredData.filter(d => d.fileType === fileType);
+  if (status) filteredData = filteredData.filter(d => d.status === status);
+  if (month) filteredData = filteredData.filter(d => d.month === month);
+
+  const total = filteredData.length;
+
+  // Pagination
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
-
-  const paginatedData = data.slice(startIndex, endIndex);
+  const paginatedData = filteredData.slice(startIndex, endIndex);
 
   res.json({
-    total: data.length,
+    total,
     page,
     limit,
     data: paginatedData,
